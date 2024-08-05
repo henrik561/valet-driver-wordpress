@@ -157,11 +157,6 @@ class WordpressValetDriver extends ValetDriver
 
                 if (isset(self::FILE_CONTENT_TYPE_HEADERS[$fileExtension])) {
                     header(self::FILE_CONTENT_TYPE_HEADERS[$fileExtension]);
-                    // log error to __dir ./debug.log with message of extensiton and uri
-                    file_put_contents(__DIR__ . '/debug.log', 'Extension found: ' . $fileExtension . ' - ' . $uri . PHP_EOL, FILE_APPEND);
-                } else {
-                    // log error to __dir ./debug.log with message of extensiton and uri
-                    file_put_contents(__DIR__ . '/debug.log', 'Extension not found: ' . $fileExtension . ' - ' . $uri . PHP_EOL, FILE_APPEND);
                 }
 
                 $uri = preg_replace('/\?.*/', '', $uri);
