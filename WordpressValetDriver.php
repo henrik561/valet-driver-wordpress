@@ -7,62 +7,69 @@ use Valet\Drivers\ValetDriver;
 class WordpressValetDriver extends ValetDriver
 {
     private const SITES = ['houtje-touwtje'];
+
     private const FILE_CONTENT_TYPE_HEADERS = [
-        'css' => 'Content-Type:text/css',
-        'js' => 'Content-Type:text/javascript',
-        'json' => 'Content-Type:application/json',
-        'xml' => 'Content-Type:application/xml',
-        'pdf' => 'Content-Type:application/pdf',
-        'zip' => 'Content-Type:application/zip',
-        'doc' => 'Content-Type:application/msword',
-        'xls' => 'Content-Type:application/vnd.ms-excel',
-        'ppt' => 'Content-Type:application/vnd.ms-powerpoint',
-        'gif' => 'Content-Type:image/gif',
-        'png' => 'Content-Type:image/png',
-        'jpeg' => 'Content-Type:image/jpg',
-        'jpg' => 'Content-Type:image/jpg',
-        'svg' => 'Content-Type:image/svg',
-        'ico' => 'Content-Type:image/x-icon',
-        'mp3' => 'Content-Type:audio/mpeg',
-        'wav' => 'Content-Type:audio/wav',
-        'mp4' => 'Content-Type:video/mp4',
-        'webm' => 'Content-Type:video/webm',
-        'ogv' => 'Content-Type:video/ogg',
-        'flv' => 'Content-Type:video/x-flv',
-        'avi' => 'Content-Type:video/x-msvideo',
-        'wmv' => 'Content-Type:video/x-ms-wmv',
-        'webp' => 'Content-Type:image/webp',
-        'woff' => 'Content-Type:application/font-woff',
-        'woff2' => 'Content-Type:application/font-woff2',
-        'ttf' => 'Content-Type:application/font-ttf',
-        'otf' => 'Content-Type:application/font-otf',
-        'eot' => 'Content-Type:application/vnd.ms-fontobject',
-        'sfnt' => 'Content-Type:application/font-sfnt',
-        'svgz' => 'Content-Type:image/svg+xml',
-        'webmanifest' => 'Content-Type:application/manifest+json',
-        'appcache' => 'Content-Type:text/cache-manifest',
-        'manifest' => 'Content-Type:text/cache-manifest',
-        'html' => 'Content-Type:text/html',
-        'htm' => 'Content-Type:text/html',
-        'txt' => 'Content-Type:text/plain',
-        'md' => 'Content-Type:text/markdown',
-        'markdown' => 'Content-Type:text/markdown',
-        'csv' => 'Content-Type:text/csv',
-        'tsv' => 'Content-Type:text/tab-separated-values',
-        'ics' => 'Content-Type:text/calendar',
-        'vcf' => 'Content-Type:text/vcard',
-        'yaml' => 'Content-Type:text/yaml',
-        'yml' => 'Content-Type:text/yaml',
-        'jsonld' => 'Content-Type:application/ld+json',
-        'rdf' => 'Content-Type:application/rdf+xml',
-        'rss' => 'Content-Type:application/rss+xml',
-        'atom' => 'Content-Type:application/atom+xml',
-        'opml' => 'Content-Type:text/x-opml',
-        'sgml' => 'Content-Type:text/sgml',
-        'xhtml' => 'Content-Type:application/xhtml+xml',
-        'xht' => 'Content-Type:application/xhtml+xml',
-        'webapp' => 'Content-Type:application/x-web-app-manifest+json',
-        'webm' => 'Content-Type:video/webm'
+        'css' => 'text/css',
+        'js' => 'text/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'pdf' => 'application/pdf',
+        'zip' => 'application/zip',
+        'doc' => 'application/msword',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'gif' => 'image/gif',
+        'png' => 'image/png',
+        'jpeg' => 'image/jpg',
+        'jpg' => 'image/jpg',
+        'svg' => 'image/svg+xml',
+        'ico' => 'image/x-icon',
+        'mp3' => 'audio/mpeg',
+        'wav' => 'audio/wav',
+        'mp4' => 'video/mp4',
+        'webm' => 'video/webm',
+        'ogv' => 'video/ogg',
+        'flv' => 'video/x-flv',
+        'avi' => 'video/x-msvideo',
+        'wmv' => 'video/x-ms-wmv',
+        'webp' => 'image/webp',
+        'woff' => 'application/font-woff',
+        'woff2' => 'application/font-woff2',
+        'ttf' => 'application/font-ttf',
+        'otf' => 'application/font-otf',
+        'eot' => 'application/vnd.ms-fontobject',
+        'sfnt' => 'application/font-sfnt',
+        'webmanifest' => 'application/manifest+json',
+        'appcache' => 'text/cache-manifest',
+        'html' => 'text/html',
+        'htm' => 'text/html',
+        'txt' => 'text/plain',
+        'md' => 'text/markdown',
+        'markdown' => 'text/markdown',
+        'csv' => 'text/csv',
+        'tsv' => 'text/tab-separated-values',
+        'ics' => 'text/calendar',
+        'vcf' => 'text/vcard',
+        'yaml' => 'text/yaml',
+        'yml' => 'text/yaml',
+        'jsonld' => 'application/ld+json',
+        'rdf' => 'application/rdf+xml',
+        'rss' => 'application/rss+xml',
+        'atom' => 'application/atom+xml',
+        'opml' => 'text/x-opml',
+        'sgml' => 'text/sgml',
+        'xhtml' => 'application/xhtml+xml',
+        'webapp' => 'application/x-web-app-manifest+json',
+    ];
+
+    private const URI_REWRITE_RULES = [
+        '/^\/static\/lib\/js\/embed\.min\.js$/' => '/wp-includes/js/wp-embed.min.js',
+        '/^\/static\/lib\/(.*)$/' => '/wp-includes/$1',
+        '/^\/file\/(.*)$/' => '/wp-content/uploads/$1',
+        '/^\/static\/ext\/(.*)$/' => '/wp-content/plugins/$1',
+        '/^\/static\/(.*)$/' => '/wp-content/themes/flatsome-child/$1',
+        '/^\/flatsome\/(.*)$/' => '/wp-content/themes/flatsome/$1',
+        '/^\/ajax$/' => '/wp-admin/admin-ajax.php',
     ];
 
     /**
@@ -70,7 +77,7 @@ class WordpressValetDriver extends ValetDriver
      */
     public function serves(string $sitePath, string $siteName, string $uri): bool
     {
-        return in_array($siteName, self::SITES);
+        return in_array($siteName, self::SITES, true);
     }
 
     /**
@@ -78,7 +85,7 @@ class WordpressValetDriver extends ValetDriver
      */
     public function frontControllerPath(string $sitePath, string $siteName, string $uri): ?string
     {
-        if ($uri == '/') {
+        if ($uri === '/') {
             return $sitePath . '/index.php';
         }
 
@@ -92,81 +99,12 @@ class WordpressValetDriver extends ValetDriver
     /**
      * Get the fully resolved path to the application's front controller.
      */
-    public function isStaticFile(string $sitePath, string $siteName, string $uri): string
+    public function isStaticFile(string $sitePath, string $siteName, string $uri): ?string
     {
-        $indexPath = $sitePath;
-
-        if ($uri !== '' && $uri !== '/' && strpos($uri, '/wp-admin/') !== 0 && strpos($uri, '/wp-content/') !== 0 && strpos($uri, '/wp-includes/') !== 0) {
-            $indexPath .= $uri;
-        } else {
-            return false;
-        }
-
-        // &iAwZS_rogier_log_in=2021
-        $rules = [
-            [
-                'pattern' => '/^\/index\.php$/',
-                'replacement' => null, // No action, matches the rule and stops further processing
-            ],
-            [
-                'pattern' => '/^\/static\/lib\/js\/embed\.min\.js$/',
-                'replacement' => '/wp-includes/js/wp-embed.min.js',
-            ],
-            [
-                'pattern' => '/^\/static\/lib\/(.*)$/',
-                'replacement' => '/wp-includes/$1',
-            ],
-            [
-                'pattern' => '/^\/file\/(.*)$/',
-                'replacement' => '/wp-content/uploads/$1',
-            ],
-            [
-                'pattern' => '/^\/static\/ext\/(.*)$/',
-                'replacement' => '/wp-content/plugins/$1',
-            ],
-            [
-                'pattern' => '/^\/static\/(.*)$/',
-                'replacement' => '/wp-content/themes/flatsome-child/$1',
-            ],
-            [
-                'pattern' => '/^\/static_main\/style\.css$/',
-                'replacement' => '/index.php?parent_wrapper=1',
-            ],
-            [
-                'pattern' => '/^\/flatsome\/(.*)$/',
-                'replacement' => '/wp-content/themes/flatsome/$1',
-            ],
-            [
-                'pattern' => '/^\/static_main\/(.*)$/',
-                'replacement' => '/wp-content/themes/flatsome/$1',
-            ],
-            [
-                'pattern' => '/^\/ajax$/',
-                'replacement' => '/wp-admin/admin-ajax.php',
-            ],
-            [
-                'pattern' => '/^\/wp-content\/themes\/flatsome-child\/screenshot\.png|readme\.html|license\.txt|wp-content\/debug\.log|wp-includes\/$/',
-                'replacement' => '/nothing_404_404',
-            ],
-            [
-                'pattern' => '/^\/(((wp-content|wp-includes)\/([A-Za-z0-9\-\_\/]*))|(wp-admin\/(!network\/?)([A-Za-z0-9\-\_\/]+)))(\.txt|\/)$/',
-                'replacement' => '/nothing_404_404',
-            ],
-        ];
-
-        foreach ($rules as $rule) {
-            if (preg_match($rule['pattern'], $uri)) {
-                if ($rule['replacement'] !== null) {
-                    $oldUri = $uri;
-                    $uri = preg_replace($rule['pattern'], $rule['replacement'], $uri);
-                    // write file to __DIR__ ./debug.log and write the old uri and the new uri
-                    // file_put_contents(__DIR__ . '/debug.log',  $oldUri . ' -> ' . $uri . PHP_EOL, FILE_APPEND);
-                }
-
-                $uri = preg_replace('/\?.*/', '', $uri);
-                $fileExtension = end(explode('.', $uri));
-
-                // file_put_contents(__DIR__ . '/debug.log',  $uri . ' -> ' . $fileExtension . PHP_EOL, FILE_APPEND);
+        foreach (self::URI_REWRITE_RULES as $pattern => $replacement) {
+            if (preg_match($pattern, $uri)) {
+                $uri = preg_replace($pattern, $replacement, $uri);
+                $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
 
                 if (!$fileExtension) {
                     return $sitePath . $uri;
@@ -174,18 +112,12 @@ class WordpressValetDriver extends ValetDriver
 
                 if (isset(self::FILE_CONTENT_TYPE_HEADERS[$fileExtension])) {
                     header(self::FILE_CONTENT_TYPE_HEADERS[$fileExtension]);
-                    // file_put_contents(__DIR__ . '/debug.log',  $uri . ' -> ' . self::FILE_CONTENT_TYPE_HEADERS[$fileExtension] . PHP_EOL, FILE_APPEND);
                 }
 
-
                 return $sitePath . $uri;
-                break;
             }
         }
 
-        // write file to __DIR__ ./debug.log and write the uri and say that there is no match found
-        file_put_contents(__DIR__ . '/debug.log',  $uri . ' -> no match found' . PHP_EOL, FILE_APPEND);
-
-        return $indexPath;
+        return null;
     }
 }
